@@ -2,6 +2,8 @@ package com.ttknp.understandspringbootcachecrudh2.model;
 
 import jakarta.persistence.*;
 
+// if you use the tool database in intellij it'll make sure to mapping  @Table(name = "<name>") to table
+// ctrl + (click to <name>)
 @Entity
 @Table(name = "faculties")
 public class Faculty {

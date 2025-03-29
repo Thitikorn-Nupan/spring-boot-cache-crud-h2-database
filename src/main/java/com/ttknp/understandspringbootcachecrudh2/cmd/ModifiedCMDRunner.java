@@ -29,6 +29,7 @@ public class ModifiedCMDRunner implements CommandLineRunner {
           // fetchingFacultiesAndFacultyAndCaches();
           fetchingFacultyAndEditAndCaches();
         */
+        fetchingFacultyAndEditAndCaches();
     }
 
     public void fetchingFacultiesAndCaches() { // reads and clear cached
@@ -80,7 +81,7 @@ public class ModifiedCMDRunner implements CommandLineRunner {
 
         facultyService.editFaculty(new Faculty(0L,"Faculty of Nursing",8),2);
 
-        log.application.debug("after update and clear cache");
+        log.application.debug("after update and clear cache");  // cached will clear auto because i updated id 2
 
         log.application.debug(".... faculty (called : {}) store {} ....",3,facultyService.getFacultyById(2)); // 3s.
 
