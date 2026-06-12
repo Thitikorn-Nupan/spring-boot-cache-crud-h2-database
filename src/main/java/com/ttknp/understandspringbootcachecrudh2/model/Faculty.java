@@ -11,8 +11,7 @@ public class Faculty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    // ** it will mapped bachelor_amount column
-    private Integer bachelorAmount;
+    private Integer bachelorAmount; // ** it will mapped bachelor_amount column
 
     public Faculty(Long id, String name, Integer bachelorAmount) {
         this.id = id;

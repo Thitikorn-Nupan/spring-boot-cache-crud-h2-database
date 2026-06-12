@@ -11,8 +11,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
-
-
 /**
  *** Enables the cache mechanism. in the Spring Boot application by using the annotation @EnableCaching.
  The auto-configuration enables caching and setup a CacheManager, if there is no already defined instance of CacheManager.
@@ -24,14 +22,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class FacultyDTO implements FacultyService {
 
-    private FacultyRepo facultyRepo;
-    private Log log;
-    private CacheManager cacheManager;
+    private final Log log;
+    private final FacultyRepo facultyRepo;
+    private final CacheManager cacheManager;
 
     @Autowired
     public FacultyDTO(FacultyRepo facultyRepo,CacheManager cacheManager) {
-        this.facultyRepo = facultyRepo;
         log = new Log(FacultyDTO.class);
+        this.facultyRepo = facultyRepo;
         this.cacheManager = cacheManager;
     }
 
@@ -45,11 +43,10 @@ public class FacultyDTO implements FacultyService {
     @Override
     public Iterable<Faculty> getAllFaculty() {
         simulateDelay3s();
-        log.application.debug("after 3 sec. then get the faculty list");
         return  facultyRepo.findAll();
     }
 
-    // *** We can also apply a condition in the annotation by using the condition attribute. ** When we apply the condition in the annotation, it is called conditional caching.
+    /// *** We can also apply a condition in the annotation by using the condition attribute. ** When we apply the condition in the annotation, it is called conditional caching.
     // This case i do not want
     @Cacheable(value = "findById" , key = "#id") // work with remove
     @Override
@@ -62,7 +59,6 @@ public class FacultyDTO implements FacultyService {
     public Faculty getFacultyByName(String name) {
         return null;
     }
-
 
     // only void method work!
     // In the Spring Framework, the @CacheEvict annotation is used to remove one or more entries from a cache.
@@ -99,31 +95,32 @@ public class FacultyDTO implements FacultyService {
         return false;
     }
 
-    // ** When you added faculty but you have cached after get all faculties
-    // You get all again its new faculty won show
-    // Because it gets all from cached , How to fix?
+    /// ** When you added faculty , but you have cached after get all faculties
+    /// You get all again its new faculty won't show
+    /// Because it gets all from cached , and this how to fix
     @Override
     public Boolean saveFaculty(Faculty faculty) {
-        // Just clear it
+        // clear all cache
         clearCache();
         return facultyRepo.save(faculty).getId() != null;
     }
 
 
-    // Note! you can use @CacheEvict annotation for remove if you have method without key and parameter ** will work fine but key will not remove
-    // @CacheEvict(value = {"findAll","findById"}) // doesn't need code for remove cached if you use @CacheEvict annotation
+    /// Note! you can use @CacheEvict annotation for remove , if you have method without key and parameter ** will work fine but key will not remove
+    /// @CacheEvict(value = {"findAll","findById"}) // doesn't need code for remove cached if you use @CacheEvict annotation
     @Override
     public void clearCache() {
-        log.application.debug("clear cached successfully");
         // If you have to clear all cached no care keys use CacheManager class **
-        cacheManager.getCacheNames().stream().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
+        cacheManager.getCacheNames()
+                .stream()
+                .forEach(cacheName -> cacheManager.getCache(cacheName).clear());
+        log.application.debug("clear all cached successfully");
     }
 
-    // ** For testing spring boot cached  // If you don't do this you won understand
+    /// For testing spring boot cached  // If you don't do this you won't understand
     private void simulateDelay3s() {
         try {
-            long time = 3000L;
-            Thread.sleep(time);
+            Thread.sleep(3000L);
             log.application.debug("*********** simulate delay 3 sec. then get data");
         } catch (InterruptedException e) {
             throw new IllegalStateException(e);

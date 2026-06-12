@@ -6,28 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
 import java.util.Map;
 
 @RestController
 @RequestMapping(value = "{base-rest-prefix}")
 public class FacultyControl {
 
-    private FacultyService facultyService;
+    private final FacultyService facultyService;
 
     @Autowired
     public FacultyControl(FacultyService facultyService) {
         this.facultyService = facultyService;
     }
 
-    @RequestMapping(value = "/faculties",method = RequestMethod.GET)
-    // ** Response annotation can specify next modifier ***
-    /*
+    /**
+    Note, Response annotation can specify next modifier ***
     private @ResponseBody @ResponseStatus(code = HttpStatus.ACCEPTED) Iterable<Faculty> reads() {
         return facultyService.getAllFaculty();
     }
     */
+    @RequestMapping(value = "/faculties",method = RequestMethod.GET)
     @ResponseBody
     @ResponseStatus(code = HttpStatus.ACCEPTED)
     private Map<String,Object> reads() {
@@ -76,7 +74,6 @@ public class FacultyControl {
                 .status(HttpStatus.ACCEPTED)
                 .body(Map.of("message", message,"status", status));
     }
-
 
     @RequestMapping(value = "/faculty/clear",method = RequestMethod.DELETE)
     private ResponseEntity<Map<String,String>> clearCaches() {
